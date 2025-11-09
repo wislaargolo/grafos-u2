@@ -16,7 +16,7 @@
  */
 template<typename Node>
 class DirectedAdjacencyMatrixGraph : public IGraph<Node> {
-private:
+protected:
     // Matriz que armazena as adjacências (arestas) do grafo.
     std::vector<std::vector<int>> matrix;
     // Vetor para mapear um índice ao seu nó correspondente.

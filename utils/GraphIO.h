@@ -63,6 +63,8 @@ void populate_graph_weighted_from_file(const std::string& filename, IGraph<Node>
 
     std::string line;
     size_t order;
+
+    std::getline(file, line);
     std::stringstream ss_order(line);
 
     ss_order >> order;
@@ -90,10 +92,11 @@ void populate_graph_weighted_from_file(const std::string& filename, IGraph<Node>
 
             int index_u = graph.get_index(u);
             int index_v = graph.get_index(v);
-            
+
             weights[index_u][index_v] = weight;
         }
     }
+    file.close();
 
 }
 

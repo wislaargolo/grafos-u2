@@ -11,7 +11,7 @@
 /* Implementação de um grafo dirigido usando listas de adjacência */
 template<typename Node>
 class DirectedAdjacencyListGraph : public IGraph<Node> {
-    private:
+    protected:
         /*Armazena vizinhos de cada nó*/
         std::vector<std::vector<int>> adjac;  
         /*Armazena nós por índice*/
