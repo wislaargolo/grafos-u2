@@ -7,9 +7,10 @@
 #include <stdexcept>
 #include <algorithm>
 #include <queue>
-#include "graph/UndirectedAdjacencyListGraph.h"
-#include "graph/IGraph.h"
 #include <iostream> 
+
+#include "./graph/UndirectedAdjacencyListGraph.h"
+#include "./graph/IGraph.h"
 
 /**
  * @brief Realiza a travessia BFS a partir de um índice inicial, obtendo então um componente conectado.

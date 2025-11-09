@@ -7,8 +7,8 @@
 #include <stdexcept>
 #include <algorithm>
 #include "Dfs.h"
-#include "graph/UndirectedAdjacencyListGraph.h"
-#include "graph/UndirectedAdjacencyMatrixGraph.h"
+#include "./graph/UndirectedAdjacencyListGraph.h"
+#include "./graph/UndirectedAdjacencyMatrixGraph.h"
 
 /**
  * @brief Popula um grafo com dados de um arquivo de texto.

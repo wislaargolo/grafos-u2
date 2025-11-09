@@ -10,7 +10,7 @@
 #include <numeric>
 #include <unordered_map>
 
-#include "graph/IGraph.h"
+#include "./graph/IGraph.h"
 
 /**
  * @enum EdgeType
