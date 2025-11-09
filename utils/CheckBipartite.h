@@ -4,7 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <stdexcept>
-#include "./graph/IGraph.h"
+#include "../graph/IGraph.h"
 
 /**
  * @brief Dfs da verificação se o grafo é bipartido

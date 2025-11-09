@@ -3,6 +3,16 @@
 
 #include <vector>
 #include <cstddef>
+
+/**
+ * @struct Edge
+ * @brief Representa uma aresta entre dois nós do grafo.
+ */
+struct EdgeIndex {
+    int from;
+    int to;
+};
+
 /**
  * @class IGraph
  * @brief Interface genérica para Grafos.
@@ -149,6 +159,8 @@ public:
      * @return true se u e v são adjacentes, false caso contrário.
      */
     virtual bool is_adjacent(const Node& u, const Node& v) const = 0;
+
+    virtual std::vector<EdgeIndex> get_all_edges() const = 0;
 
 };
 

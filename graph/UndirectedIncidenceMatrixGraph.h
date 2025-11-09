@@ -154,6 +154,24 @@ public:
     size_t get_out_degree(const Node& node) const override {
         return get_in_degree(node);
     }
+
+    std::vector<EdgeIndex> get_all_edges() const override {
+        std::vector<EdgeIndex> edges;
+
+        for (size_t edge_index = 0; edge_index < this->get_size(); edge_index++) {
+            const auto& edge_row = this->matrix[edge_index];
+            std::vector<int> incident_nodes;
+            for (size_t node_index = 0; node_index < this->get_order(); node_index++) {
+                if (edge_row[node_index] == 1) {
+                    incident_nodes.push_back(static_cast<int>(node_index));
+                }
+            }
+            if (incident_nodes.size() == 2) {
+                edges.push_back(EdgeIndex{incident_nodes[0], incident_nodes[1]});
+            }
+        }
+        return edges;
+    }
 };
 
 #endif

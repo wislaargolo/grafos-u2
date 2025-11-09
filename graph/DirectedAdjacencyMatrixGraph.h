@@ -329,6 +329,18 @@ public:
         // Verifica se há uma aresta marcada na matriz.
         return matrix[get_index(u)][get_index(v)] == 1;
     }
+
+    std::vector<EdgeIndex> get_all_edges() const override {
+        std::vector<EdgeIndex> edges;
+        for (size_t from_index = 0; from_index < get_order(); from_index++) {
+            for( size_t to_index = 0; to_index < get_order(); to_index++) {
+                if (matrix[from_index][to_index] == 1) {
+                    edges.push_back(EdgeIndex{static_cast<int>(from_index), static_cast<int>(to_index)});
+                }
+            }
+        }
+        return edges;
+    }
 };
 
 #endif

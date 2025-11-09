@@ -316,6 +316,25 @@ public:
         }
         return false;
     }
+
+    std::vector<EdgeIndex> get_all_edges() const override {
+        std::vector<EdgeIndex> edges;
+        for (size_t edge_index = 0; edge_index < matrix.size(); edge_index++) {
+            int from_index = -1;
+            int to_index = -1;
+            for (size_t node_index = 0; node_index < this->get_order(); node_index++) {
+                if (matrix[edge_index][node_index] == -1) {
+                    from_index = static_cast<int>(node_index);
+                } else if (matrix[edge_index][node_index] == 1) {
+                    to_index = static_cast<int>(node_index);
+                }
+            }
+            if (from_index != -1 && to_index != -1) {
+                edges.push_back(EdgeIndex{from_index, to_index});
+            }
+        }
+        return edges;
+    }
 };
 
 #endif

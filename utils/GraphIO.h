@@ -7,8 +7,8 @@
 #include <stdexcept>
 #include <algorithm>
 #include "Dfs.h"
-#include "./graph/UndirectedAdjacencyListGraph.h"
-#include "./graph/UndirectedAdjacencyMatrixGraph.h"
+#include "../graph/UndirectedAdjacencyListGraph.h"
+#include "../graph/UndirectedAdjacencyMatrixGraph.h"
 
 /**
  * @brief Popula um grafo com dados de um arquivo de texto.
@@ -53,6 +53,90 @@ void populate_graph_from_file(const std::string& filename, IGraph<Node>& graph) 
 
     file.close();
 }
+
+template<typename Node>
+void populate_graph_weighted_from_file(const std::string& filename, IGraph<Node>& graph, std::vector<std::vector<double>>& weights) {
+    std::ifstream file(filename);
+    if (!file.is_open()) {
+        throw std::runtime_error("Could not open file: " + filename);
+    }
+
+    std::string line;
+    size_t order;
+    std::stringstream ss_order(line);
+
+    ss_order >> order;
+
+    weights.assign(order, std::vector<double>(order, std::numeric_limits<double>::infinity()));
+    
+    while(std::getline(file, line)) {
+        if (line.empty()) continue;
+
+        std::stringstream ss(line);
+        std::string part1, part2, part3;
+
+        if (std::getline(ss, part1, ',') && std::getline(ss, part2, ',') && std::getline(ss, part3)) {
+            std::stringstream s1(part1);
+            std::stringstream s2(part2);
+            std::stringstream s3(part3);
+
+            Node u, v;
+            double weight;
+            s1 >> u;
+            s2 >> v;
+            s3 >> weight;
+
+            graph.add_edge(u, v);
+
+            int index_u = graph.get_index(u);
+            int index_v = graph.get_index(v);
+            
+            weights[index_u][index_v] = weight;
+        }
+    }
+
+}
+
+template<typename Node>
+void print_weights_matrix(const std::vector<std::vector<double>>& weights, const IGraph<Node>& graph) {
+    size_t order = graph.get_order();
+
+    std::cout << "Weights Matrix:\n";
+
+    int col_width = 8;
+
+    std::cout << "  |";
+    for (size_t j = 0; j < order; ++j) {
+        std::cout << std::setw(col_width) << graph.get_node(j);
+    }
+    std::cout << "\n";
+
+    std::cout << std::setfill('-') << "----";
+    for (size_t j = 0; j < order; ++j) {
+        std::cout << std::setw(col_width) << "";
+    }
+    std::cout << std::setfill(' ') << "\n";
+
+    for (size_t i = 0; i < order; ++i) {
+        std::cout << graph.get_node(i) << " |"; 
+
+        for (size_t j = 0; j < order; ++j) {
+            if (j < weights[i].size() && weights[i][j] != std::numeric_limits<double>::infinity()) {
+                std::cout << "\033[1;32m"
+                          << std::setw(col_width) << std::setprecision(2) << std::fixed << weights[i][j]
+                          << "\033[0m"; 
+            } else {
+                std::cout << std::setw(col_width) << "INF";
+            }
+        }
+        std::cout << "\n";
+    }
+    std::cout << std::endl;
+
+
+}
+
+
 
 /**
  * @brief Adiciona um nó ao grafo a partir de uma representação em string.

@@ -7,7 +7,7 @@
 #include <stdexcept>
 #include <list>
 
-#include "./graph/IGraph.h"
+#include "../graph/IGraph.h"
 
 // Struct do estado da dfs
 struct DivideBlocksState {

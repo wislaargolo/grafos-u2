@@ -217,6 +217,16 @@ class DirectedAdjacencyListGraph : public IGraph<Node> {
             const auto& neighbors = adjac[get_index(u)];
             return std::find(neighbors.begin(), neighbors.end(), get_index(v)) != neighbors.end();
         }
+
+        std::vector<EdgeIndex> get_all_edges() const override {
+            std::vector<EdgeIndex> edges;
+            for (size_t from_index = 0; from_index < adjac.size(); from_index++) {
+                for (int to_index : adjac[from_index]) {
+                    edges.push_back(EdgeIndex{static_cast<int>(from_index), to_index});
+                }
+            }
+            return edges;
+        }
 };
 
 #endif // DIRECTEDADJACENCYLISTGRAPH_H

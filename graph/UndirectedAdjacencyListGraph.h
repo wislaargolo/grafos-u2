@@ -74,5 +74,18 @@ class UndirectedAdjacencyListGraph : public DirectedAdjacencyListGraph<Node> {
             /*Em grafos não-direcionados, o grau de entrada é igual ao grau de saída*/
             return this->get_out_degree(node);
         }
+
+        std::vector<EdgeIndex> get_all_edges() const override {
+            std::vector<EdgeIndex> edges;
+
+            for (size_t from_index = 0; from_index < this->adjac.size(); from_index++) {
+                for (int to_index : this->adjac[from_index]) {
+                    if (from_index <= static_cast<size_t>(to_index)) {
+                        edges.push_back(EdgeIndex{static_cast<int>(from_index), to_index});
+                    }
+                }
+            }
+            return edges;
+        }
 };
 #endif // UNDIRECTEDADJACENCYLISTGRAPH_H
