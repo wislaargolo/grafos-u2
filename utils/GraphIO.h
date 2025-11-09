@@ -55,7 +55,8 @@ void populate_graph_from_file(const std::string& filename, IGraph<Node>& graph) 
 }
 
 template<typename Node>
-void populate_graph_weighted_from_file(const std::string& filename, IGraph<Node>& graph, std::vector<std::vector<double>>& weights) {
+void populate_graph_weighted_from_file(const std::string& filename, IGraph<Node>& graph, 
+                                        std::vector<std::vector<double>>& weights, bool is_directed = true) {
     std::ifstream file(filename);
     if (!file.is_open()) {
         throw std::runtime_error("Could not open file: " + filename);
@@ -94,6 +95,10 @@ void populate_graph_weighted_from_file(const std::string& filename, IGraph<Node>
             int index_v = graph.get_index(v);
 
             weights[index_u][index_v] = weight;
+
+            if(!is_directed) {
+                weights[index_v][index_u] = weight;
+            }
         }
     }
     file.close();
