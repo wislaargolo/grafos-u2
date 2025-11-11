@@ -15,22 +15,21 @@
 
 /**
  * @brief Verifica se um grafo não-direcionado é conectado.
- *
- * @note Para grafos direcionados, essa função verifica se o grafo subjacente
- * é conectado.
- *
  * @tparam Node O tipo de dado dos nós do grafo.
  * @param graph O grafo a ser verificado.
  * @return true se o grafo for conectado, false caso contrário.
  */
 template<typename Node>
 bool is_connected(const IGraph<Node>& graph) {
-    if (graph.get_order() <= 1) return true;
+    if (graph.get_order() <= 1) {
+        return true;
+    }
 
     /*Se todos os nós são acessíveis a partir de um nó inicial, o grafo é conectado*/
     std::vector<Node> visited = bfs(graph, graph.get_nodes().front());
     return visited.size() == graph.get_order();
 }
+
 
 /**
  * @brief Copia os nós e as arestas de um grafo de origem para um grafo de destino.

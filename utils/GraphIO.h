@@ -6,6 +6,9 @@
 #include <sstream>
 #include <stdexcept>
 #include <algorithm>
+#include <iostream>
+#include <iomanip>
+
 #include "Dfs.h"
 #include "../graph/UndirectedAdjacencyListGraph.h"
 #include "../graph/UndirectedAdjacencyMatrixGraph.h"
