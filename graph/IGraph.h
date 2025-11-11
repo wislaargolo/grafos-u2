@@ -5,7 +5,7 @@
 #include <cstddef>
 
 /**
- * @struct Edge
+ * @struct EdgeIndex
  * @brief Representa uma aresta entre dois nós do grafo.
  */
 struct EdgeIndex {
@@ -160,6 +160,10 @@ public:
      */
     virtual bool is_adjacent(const Node& u, const Node& v) const = 0;
 
+    /**
+     * @brief Retorna todas as arestas do grafo.
+     * @return Um std::vector<EdgeIndex> com todas as arestas do grafo.
+     */
     virtual std::vector<EdgeIndex> get_all_edges() const = 0;
 
 };

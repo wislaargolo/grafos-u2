@@ -22,16 +22,25 @@ struct BellmanFordResult {
 
 };
 
+/**
+ * @brief Implementa o algoritmo de Bellman-Ford.
+ * @param graph O grafo onde o algoritmo será aplicado.
+ * @param weights A matriz de pesos das arestas do grafo.
+ * @param start O nó inicial para o cálculo das distâncias.
+ * @return O resultado do algoritmo contendo distâncias, predecessores e indicação de ciclo negativo.
+ */
 template<typename Node>
 BellmanFordResult bellman_ford(const IGraph<Node>& graph, 
     const std::vector<std::vector<double>>& weights, const Node& start) {
 
     BellmanFordResult result(graph.get_order());
-    int start_index = graph.get_index(start);
 
+    //Inicializa a distância do nó inicial para ele mesmo como 0
+    int start_index = graph.get_index(start);
     result.distances[start_index] = 0;
 
     for(size_t i = 0; i < graph.get_order() - 1; ++i) {
+        //Para cada aresta, verifica se é possível melhorar a distância
         for(const EdgeIndex& edge : graph.get_all_edges()) {
             int u = edge.from;
             int v = edge.to;
@@ -59,22 +68,31 @@ BellmanFordResult bellman_ford(const IGraph<Node>& graph,
     return result;
 }
 
+/**
+ * @brief Imprime o resultado do algoritmo de Bellman-Ford.
+ * @param result O resultado do algoritmo.
+ * @param graph O grafo onde o algoritmo foi aplicado.
+ */
 template<typename Node>
 void print_bellman_ford_result(const BellmanFordResult& result, const IGraph<Node>& graph) {
     if(result.has_negative_cycle) {
         std::cout << "Graph contains a negative weight cycle.\n";
     } else {
+
         std::cout << "Shortest distances from the start node:\n";
 
+        // Tamanho fixo para alinhamento
         const int label_width = 12; 
         const int data_width = 6;
         
+        // Cabeçalho da tabela
         std::cout << std::left << std::setw(label_width) << "Nodes" << std::right << " | ";
         for(size_t i = 0; i < graph.get_order(); ++i) {
             std::cout << std::setw(data_width) << graph.get_node(i);
         }
-
         std::cout << "\n";
+
+        // Linha separadora
         std::cout << std::setfill('-') << std::setw(label_width) << "" << "---";
         for(size_t i = 0; i < graph.get_order(); ++i) {
             std::cout << std::setw(data_width) << "";   
@@ -82,6 +100,7 @@ void print_bellman_ford_result(const BellmanFordResult& result, const IGraph<Nod
 
         std::cout << std::setfill(' ') << "\n";
 
+        // Linha das distâncias
         std::cout << std::left << std::setw(label_width) << "Distances" << std::right << " | ";
         for(size_t i = 0; i < graph.get_order(); ++i) {
             if(result.distances[i] == std::numeric_limits<double>::infinity()) {
@@ -93,6 +112,7 @@ void print_bellman_ford_result(const BellmanFordResult& result, const IGraph<Nod
 
         std::cout << "\n";
 
+        // Linha dos predecessores
         std::cout << std::left << std::setw(label_width) << "Predecessors" << std::right << " | ";
         for(size_t i = 0; i < graph.get_order(); ++i) {
             if(result.predecessors[i] == -1) {
