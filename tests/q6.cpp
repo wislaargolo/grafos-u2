@@ -36,5 +36,9 @@ int main() {
     auto result_und = bellman_ford(graph_und, weights_und, 1);
     print_bellman_ford_result(result_und, graph_und);
 
+    auto edges = graph_und.get_all_edges();
+    for (const auto& edge : edges) {
+        std::cout << "Edge from " << graph_und.get_node(edge.from) << " to " << graph_und.get_node(edge.to) << "\n";
+    }
     return 0;
 }
