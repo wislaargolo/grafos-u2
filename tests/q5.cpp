@@ -56,20 +56,20 @@ void print_result(const IGraph<Node>& graph, DjikstraResult& result) {
 }
 
 int main() {
-    std::cout << "Creating graph from file 'graph-djikstra.txt'...\n";
-    DirectedAdjacencyListGraph<char> graph;
+    std::cout << "Creating graph from file 'digraph.txt'...\n";
+    DirectedAdjacencyListGraph<int> graph;
     std::vector<std::vector<double>> weights;
-    populate_graph_weighted_from_file("data/graph-djikstra.txt", graph, weights);
+    populate_graph_weighted_from_file("data/digraph.txt", graph, weights);
     graph.print();
     print_weights_matrix(weights, graph);
-    auto result = djikstra(graph, weights, 'A');
+    auto result = djikstra(graph, weights, 1);
     print_result(graph, result);
 
 
-    std::cout << "\nCreating graph from file 'graph-djikstra-und.txt'...\n";
+    std::cout << "\nCreating graph from file 'graph.txt'...\n";
     UndirectedAdjacencyListGraph<int> graph_und;
     std::vector<std::vector<double>> weights_und;
-    populate_graph_weighted_from_file("data/graph-djikstra-und.txt", graph_und, weights_und, false);
+    populate_graph_weighted_from_file("data/graph.txt", graph_und, weights_und, false);
     graph_und.print();
     print_weights_matrix(weights_und, graph_und);
     auto result_und = djikstra(graph_und, weights_und, 1);
