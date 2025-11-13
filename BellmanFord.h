@@ -38,10 +38,11 @@ BellmanFordResult bellman_ford(const IGraph<Node>& graph,
     //Inicializa a distância do nó inicial para ele mesmo como 0
     int start_index = graph.get_index(start);
     result.distances[start_index] = 0;
+    auto edges = graph.get_all_edges();
 
     for(size_t i = 0; i < graph.get_order() - 1; ++i) {
         //Para cada aresta, verifica se é possível melhorar a distância
-        for(const EdgeIndex& edge : graph.get_all_edges()) {
+        for(const EdgeIndex& edge : edges) {
             int u = edge.from;
             int v = edge.to;
             double weight = weights[u][v];
@@ -54,7 +55,7 @@ BellmanFordResult bellman_ford(const IGraph<Node>& graph,
     }
 
     // Verifica a presença de ciclos negativos.
-    for(const EdgeIndex& edge : graph.get_all_edges()) {
+    for(const EdgeIndex& edge : edges) {
         int u = edge.from;
         int v = edge.to;
         double weight = weights[u][v];

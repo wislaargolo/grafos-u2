@@ -168,8 +168,9 @@ public:
                     incident_nodes.push_back(static_cast<int>(node_index));
                 }
             }
-            // Para evitar duplicatas, adiciona a aresta apenas uma vez, quando incident_nodes[0] <= incident_nodes[1]
-            if (incident_nodes.size() == 2 && incident_nodes[0] <= incident_nodes[1]) {
+
+            //Quando a aresta conecta exatamente dois nós, adiciona à lista de arestas
+            if (incident_nodes.size() == 2) {
                 edges.push_back(EdgeIndex{incident_nodes[0], incident_nodes[1]});
             }
         }

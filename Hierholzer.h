@@ -40,7 +40,7 @@ std::list<Node> hierholzer(const IGraph<Node>& graph, int start_index, RemoveEdg
     // Cria uma cópia da lista de adjacência para manipulação
     std::unordered_map<int, std::list<int>> adj_list;
     for (size_t i = 0; i < graph.get_order(); i++) {
-        std::vector<int> neighbors = graph.get_neighbors_indices(i);
+        auto neighbors = graph.get_neighbors_indices(i);
         adj_list[i] = std::list<int>(neighbors.begin(), neighbors.end());
     }
 
