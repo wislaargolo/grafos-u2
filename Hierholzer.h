@@ -28,6 +28,7 @@ struct HierholzerResult {
  * @brief Implementação do Algoritmo de Hierholzer para encontrar ciclos ou caminhos eulerianos em grafos.
  * @param graph O grafo a ser percorrido.
  * @param start_index O índice do nó inicial para começar a busca.
+ * @param remove_edge Função para remover uma aresta do grafo quando visitada.
  * @return Uma lista com o ciclo ou caminho euleriano encontrado.
  */
 template<typename Node, class RemoveEdgeFunc>
@@ -88,6 +89,7 @@ HierholzerResult<Node> hierholzer_undirected(const IGraph<Node>& graph) {
             start_cycle = i;
         }
 
+        // Se o grau for par, não importa porque a regra é que no máximo dois nós podem ter grau ímpar
         if(degree % 2 == 0) {
             continue;
         }
@@ -97,6 +99,7 @@ HierholzerResult<Node> hierholzer_undirected(const IGraph<Node>& graph) {
             start_path = i;
         }
 
+        // Conta o número de nós com grau ímpar
         odd_degree_count++;
     }
 
@@ -117,6 +120,7 @@ HierholzerResult<Node> hierholzer_undirected(const IGraph<Node>& graph) {
         return HierholzerResult<Node>();
     }
 
+    // Em grafos não direcionados, a remoção da aresta deve ser feita em ambas as direções
     auto remove_edge = [](std::unordered_map<int, std::list<int>>& adj_list, int from, int to) {
         adj_list[from].remove(to);
         adj_list[to].remove(from);
@@ -142,18 +146,21 @@ HierholzerResult<Node> hierholzer_directed(const IGraph<Node>& graph) {
     std::optional<int> start_cycle;
 
     size_t out_degree = 0, in_degree = 0;
+    // Mantém a contagem de nós com grau de entrada e saída diferentes
     size_t in = 0, out = 0;
 
     for(size_t i = 0; i < graph.get_order(); ++i) {
 
+        // Obtém os graus de entrada e saída do nó atual
         out_degree = graph.get_out_degree(graph.get_node(i));
         in_degree = graph.get_in_degree(graph.get_node(i));
 
-        // Identifica um nó inicial para o ciclo, se existir
+        // Identifica um nó inicial para o ciclo, se existir. Pode ser qualquer nó com arestas de saída.
         if(out_degree > 0 && !start_cycle.has_value()) {
             start_cycle = i;
         }
 
+        // Se os graus de entrada e saída forem iguais, passa para o próximo nó
         if(out_degree == in_degree) {
             continue;
         }
@@ -187,6 +194,7 @@ HierholzerResult<Node> hierholzer_directed(const IGraph<Node>& graph) {
         return HierholzerResult<Node>();
     }
 
+    // Em grafos direcionados, a remoção da aresta é feita apenas na direção da aresta
     auto remove_edge = [](std::unordered_map<int, std::list<int>>& adj_list, int from, int to) {
         adj_list[from].remove(to);
     };

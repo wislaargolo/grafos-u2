@@ -108,8 +108,10 @@ public:
     std::vector<EdgeIndex> get_all_edges() const override {
         std::vector<EdgeIndex> edges;
 
+        // Percorre a matriz para coletar todas as arestas.
         for (size_t from_index = 0; from_index < this->get_order(); from_index++) {
             for (size_t to_index = 0; to_index < this->get_order(); to_index++) {
+                // Para evitar duplicatas, adiciona a aresta apenas uma vez, quando from_index <= to_index
                 if (from_index <= to_index && this->matrix[from_index][to_index] == 1) {
                     edges.push_back(EdgeIndex{static_cast<int>(from_index), static_cast<int>(to_index)});
                 }

@@ -220,7 +220,9 @@ class DirectedAdjacencyListGraph : public IGraph<Node> {
 
         std::vector<EdgeIndex> get_all_edges() const override {
             std::vector<EdgeIndex> edges;
+            // Percorre a lista de adjacência para coletar todas as arestas
             for (size_t from_index = 0; from_index < adjac.size(); from_index++) {
+                // Para cada vizinho do nó atual, cria uma aresta
                 for (int to_index : adjac[from_index]) {
                     edges.push_back(EdgeIndex{static_cast<int>(from_index), to_index});
                 }

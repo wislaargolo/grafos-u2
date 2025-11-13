@@ -158,15 +158,18 @@ public:
     std::vector<EdgeIndex> get_all_edges() const override {
         std::vector<EdgeIndex> edges;
 
+        // Percorre a matriz para coletar todas as arestas.
         for (size_t edge_index = 0; edge_index < this->get_size(); edge_index++) {
             const auto& edge_row = this->matrix[edge_index];
             std::vector<int> incident_nodes;
+            // Coleta os nós incidentes à aresta.
             for (size_t node_index = 0; node_index < this->get_order(); node_index++) {
                 if (edge_row[node_index] == 1) {
                     incident_nodes.push_back(static_cast<int>(node_index));
                 }
             }
-            if (incident_nodes.size() == 2) {
+            // Para evitar duplicatas, adiciona a aresta apenas uma vez, quando incident_nodes[0] <= incident_nodes[1]
+            if (incident_nodes.size() == 2 && incident_nodes[0] <= incident_nodes[1]) {
                 edges.push_back(EdgeIndex{incident_nodes[0], incident_nodes[1]});
             }
         }

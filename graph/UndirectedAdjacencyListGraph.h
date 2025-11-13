@@ -78,8 +78,10 @@ class UndirectedAdjacencyListGraph : public DirectedAdjacencyListGraph<Node> {
         std::vector<EdgeIndex> get_all_edges() const override {
             std::vector<EdgeIndex> edges;
 
+            // Percorre a lista de adjacência para coletar todas as arestas
             for (size_t from_index = 0; from_index < this->adjac.size(); from_index++) {
                 for (int to_index : this->adjac[from_index]) {
+                    // Para evitar duplicatas, adiciona a aresta apenas se from_index for menor ou igual a to_index
                     if (from_index <= static_cast<size_t>(to_index)) {
                         edges.push_back(EdgeIndex{static_cast<int>(from_index), to_index});
                     }
