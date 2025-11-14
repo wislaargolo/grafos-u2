@@ -8,34 +8,23 @@
 #include "../graph/DirectedIncidenceMatrixGraph.h"
 #include "../utils/GraphIO.h"
 
-void get_hierholzer_result(IGraph<char>& graph, std::string filename) {
-
-    std::cout << "Creating graph from file '" << filename << "'...\n";
-    populate_graph_from_file(filename, graph);
-    graph.print();
-
-    std::cout << "Result of Hierholzer's Algorithm:\n";
-
-    auto circuit = hierholzer_directed(graph);
-
-    std::cout << "Has Eulerian Cycle: " << (circuit.has_eulerian_cycle ? "Yes" : "No") << "\n";
-    std::cout << "Has Eulerian Path: " << (circuit.has_eulerian_path ? "Yes" : "No") << "\n";
-    std::cout << "Result: ";
-    for (const auto& node : circuit.circuit) {
-        std::cout << node << " ";
-    }
-    std::cout << "\n\n";
-}
 
 int main() {
 
+    std::cout << "Creating graphs from file 'graph-path-9.txt'...\n\n";
     DirectedAdjacencyMatrixGraph<char> graph_matrix;
-    get_hierholzer_result(graph_matrix, "data/graph-path-9.txt");
+    populate_graph_from_file("data/graph-path-9.txt", graph_matrix);
+    graph_matrix.print();
+    print_hierholzer_result(hierholzer_directed(graph_matrix));
 
     DirectedAdjacencyListGraph<char> graph_list;
-    get_hierholzer_result(graph_list, "data/graph-path-9.txt");
+    populate_graph_from_file("data/graph-path-9.txt", graph_list);
+    graph_list.print();
+    print_hierholzer_result(hierholzer_directed(graph_list));
 
     DirectedIncidenceMatrixGraph<char> graph_incidence;
-    get_hierholzer_result(graph_incidence, "data/graph-path-9.txt");
+    populate_graph_from_file("data/graph-path-9.txt", graph_incidence);
+    graph_incidence.print();
+    print_hierholzer_result(hierholzer_directed(graph_incidence));
     return 0;
 }

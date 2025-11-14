@@ -6,6 +6,7 @@
 #include <list>
 #include <optional>
 #include <unordered_map>
+#include <iostream>
 
 #include "graph/IGraph.h"
 #include "utils/GraphAlgorithms.h"
@@ -201,6 +202,22 @@ HierholzerResult<Node> hierholzer_directed(const IGraph<Node>& graph) {
 
     result.circuit = hierholzer(graph, *current_index, remove_edge);
     return result;
+}
+
+/**
+ * @brief Função para imprimir o resultado do algoritmo de Hierholzer.
+ * @param result O resultado do algoritmo contendo o ciclo ou caminho euleriano.
+ */
+template<typename Node>
+void print_hierholzer_result(const HierholzerResult<Node>& result) {
+    std::cout << "Hierholzer's Algorithm Result:\n";
+    std::cout << "Has Eulerian Cycle: " << (result.has_eulerian_cycle ? "Yes" : "No") << "\n";
+    std::cout << "Has Eulerian Path: " << (result.has_eulerian_path ? "Yes" : "No") << "\n";
+    std::cout << "Result: ";
+    for (const auto& node : result.circuit) {
+        std::cout << node << " ";
+    }
+    std::cout << "\n\n";
 }
 
 
