@@ -95,7 +95,7 @@ BoruvkaResult<Node> boruvka(IGraph<Node>& graph, const std::vector<std::vector<d
         result.tree.add_node(node);
     }
 
-    DivideBlocksResult divided_blocks;
+    DivideBlocksResult divided_blocks(graph.get_order());
 
     // Para todos os nós, informa que incialmente eles pertencem a um bloco com apenas eles mesmos
     for (size_t node = 0; node < graph.get_order(); node++) {

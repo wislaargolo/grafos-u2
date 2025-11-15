@@ -18,10 +18,10 @@ void print_result(BoruvkaResult<Node>& result) {
 }
 
 int main() {
-    std::cout << "\nCreating graph from file 'graph-boruvka.txt'...\n";
+    std::cout << "\nCreating graph from file 'graph.txt'...\n";
     UndirectedAdjacencyListGraph<int> graph_und;
     std::vector<std::vector<double>> weights_und;
-    populate_graph_weighted_from_file("data/graph-boruvka.txt", graph_und, weights_und, false);
+    populate_graph_weighted_from_file("data/graph.txt", graph_und, weights_und, false);
     graph_und.print();
     print_weights_matrix(weights_und, graph_und);
     auto result_und = boruvka(graph_und, weights_und);
