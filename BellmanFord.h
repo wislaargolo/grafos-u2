@@ -38,6 +38,7 @@ BellmanFordResult bellman_ford(const IGraph<Node>& graph,
     //Inicializa a distância do nó inicial para ele mesmo como 0
     int start_index = graph.get_index(start);
     result.distances[start_index] = 0;
+    //Obtém todas as arestas do grafo
     auto edges = graph.get_all_edges();
 
     for(size_t i = 0; i < graph.get_order() - 1; ++i) {
@@ -122,7 +123,7 @@ void print_bellman_ford_result(const BellmanFordResult& result, const IGraph<Nod
                 std::cout << std::setw(data_width) << graph.get_node(result.predecessors[i]);
             }
         }
-        std::cout << std::endl;
+        std::cout << "\n\n";
     }
 }
 

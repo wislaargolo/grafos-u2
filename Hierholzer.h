@@ -39,7 +39,7 @@ std::list<Node> hierholzer(const IGraph<Node>& graph, int start_index, RemoveEdg
     int current_index = start_index;
 
     // Cria uma cópia da lista de adjacência para manipulação
-    std::unordered_map<int, std::list<int>> adj_list;
+    std::vector<std::list<int>> adj_list(graph.get_order());
     for (size_t i = 0; i < graph.get_order(); i++) {
         auto neighbors = graph.get_neighbors_indices(i);
         adj_list[i] = std::list<int>(neighbors.begin(), neighbors.end());
@@ -55,6 +55,7 @@ std::list<Node> hierholzer(const IGraph<Node>& graph, int start_index, RemoveEdg
         } else {
             // Caso possua arestas não visitadas, continua o percurso
             curr_path.push(current_index);
+            // Seleciona a próxima aresta (o próximo nó na lista de adjacência)
             int next_index = adj_list[current_index].front();
             // Remove a aresta atual da lista de adjacência. A implementação depende se o grafo é direcionado ou não.
             remove_edge(adj_list, current_index, next_index);
@@ -74,13 +75,18 @@ std::list<Node> hierholzer(const IGraph<Node>& graph, int start_index, RemoveEdg
  */
 template<typename Node>
 HierholzerResult<Node> hierholzer_undirected(const IGraph<Node>& graph) {
+    HierholzerResult<Node> result;
+
     if(graph.get_order() == 0) {
-        return HierholzerResult<Node>();
+        result.has_eulerian_cycle = true;
+        result.has_eulerian_path = true;
+        return result;
     }
 
     std::optional<int> start_path;
     std::optional<int> start_cycle;
 
+    // Conta o número de nós com grau ímpar
     size_t odd_degree_count = 0;
     for(size_t i = 0; i < graph.get_order(); ++i) {
         size_t degree = graph.get_out_degree(graph.get_node(i));
@@ -105,7 +111,6 @@ HierholzerResult<Node> hierholzer_undirected(const IGraph<Node>& graph) {
     }
 
     std::optional<int> current_index;
-    HierholzerResult<Node> result;
 
     if(odd_degree_count == 0) {
         // Todos os nós possuem grau par: ciclo euleriano existe
@@ -122,7 +127,7 @@ HierholzerResult<Node> hierholzer_undirected(const IGraph<Node>& graph) {
     }
 
     // Em grafos não direcionados, a remoção da aresta deve ser feita em ambas as direções
-    auto remove_edge = [](std::unordered_map<int, std::list<int>>& adj_list, int from, int to) {
+    auto remove_edge = [](std::vector<std::list<int>>& adj_list, int from, int to) {
         adj_list[from].remove(to);
         adj_list[to].remove(from);
     };
@@ -138,9 +143,12 @@ HierholzerResult<Node> hierholzer_undirected(const IGraph<Node>& graph) {
  */
 template<typename Node>
 HierholzerResult<Node> hierholzer_directed(const IGraph<Node>& graph) {
+    HierholzerResult<Node> result;
 
     if(graph.get_order() == 0) {
-        return HierholzerResult<Node>();
+        result.has_eulerian_cycle = true;
+        result.has_eulerian_path = true;
+        return result;
     }
 
     std::optional<int> start_path;
@@ -148,7 +156,7 @@ HierholzerResult<Node> hierholzer_directed(const IGraph<Node>& graph) {
 
     size_t out_degree = 0, in_degree = 0;
     // Mantém a contagem de nós com grau de entrada e saída diferentes
-    size_t in = 0, out = 0;
+    size_t in_count = 0, out_count = 0;
 
     for(size_t i = 0; i < graph.get_order(); ++i) {
 
@@ -169,34 +177,34 @@ HierholzerResult<Node> hierholzer_directed(const IGraph<Node>& graph) {
         // Identifica um nó inicial para o caminho, se existir
         if(out_degree == in_degree + 1) {
             start_path = i;
-            out++;
+            out_count++;
         } else if(in_degree == out_degree + 1) {
-            in++;
+            in_count++;
         } else {
-            return HierholzerResult<Node>();
+            // Diferença maior que 1 entre os graus: não há caminho ou ciclo euleriano
+            return result;
         }
     }
 
     std::optional<int> current_index;
-    HierholzerResult<Node> result;
 
     // Determina o ponto de partida com base nos graus dos nós
-    if(out == 0 && in == 0) {
+    if(out_count == 0 && in_count == 0) {
         // Todos os nós possuem mesmo grau: ciclo euleriano existe
         current_index = start_cycle;
         result.has_eulerian_cycle = true;
         result.has_eulerian_path = true;
-    } else if(out == 1 && in == 1) {
+    } else if(out_count == 1 && in_count == 1) {
         // No máximo um nó com grau de saída maior por 1 e no máximo um nó com grau de entrada maior por 1: caminho euleriano existe
         current_index = start_path;
         result.has_eulerian_path = true;
     } else {
         // Caso contrário, não há caminho ou ciclo euleriano
-        return HierholzerResult<Node>();
+        return result;
     }
 
     // Em grafos direcionados, a remoção da aresta é feita apenas na direção da aresta
-    auto remove_edge = [](std::unordered_map<int, std::list<int>>& adj_list, int from, int to) {
+    auto remove_edge = [](std::vector<std::list<int>>& adj_list, int from, int to) {
         adj_list[from].remove(to);
     };
 
