@@ -3,38 +3,34 @@
 #include <limits>
 
 #include "../graph/DirectedAdjacencyListGraph.h"
-#include "../graph/UndirectedAdjacencyListGraph.h"
+#include "../graph/DirectedAdjacencyMatrixGraph.h"
+#include "../graph/DirectedIncidenceMatrixGraph.h"
 #include "../utils/GraphIO.h"
 #include "../BellmanFord.h"
 
 int main() {
-    std::cout << "Creating graph from file 'graph-bellman.txt'...\n";
-    DirectedAdjacencyListGraph<char> graph;
+    std::cout << "Creating directed graphs from file 'digraph.txt'...\n\n";
+    DirectedAdjacencyMatrixGraph<int> graph_matrix;
     std::vector<std::vector<double>> weights;
-    populate_graph_weighted_from_file("data/graph-bellman.txt", graph, weights);
-    graph.print();
-    print_weights_matrix(weights, graph);
-    auto result = bellman_ford(graph, weights, 'A');
-    print_bellman_ford_result(result, graph);
+    populate_graph_weighted_from_file("data/digraph.txt", graph_matrix, weights);
+    graph_matrix.print();
+    print_weights_matrix(weights, graph_matrix);
+    auto result_matrix = bellman_ford(graph_matrix, weights, 1);
+    print_bellman_ford_result(result_matrix, graph_matrix);
 
-    std::cout << "\nCreating graph from file 'graph-bellman-negative.txt'...\n";
-    DirectedAdjacencyListGraph<char> graph_neg;
-    std::vector<std::vector<double>> weights_neg;
-    populate_graph_weighted_from_file("data/graph-bellman-negative.txt", graph_neg, weights_neg);
-    graph_neg.print();
-    print_weights_matrix(weights_neg, graph_neg);
-    auto result_neg = bellman_ford(graph_neg, weights_neg, 'A');
-    print_bellman_ford_result(result_neg, graph_neg);
-    
+    DirectedAdjacencyListGraph<int> graph_list;
+    populate_graph_weighted_from_file("data/digraph.txt", graph_list, weights);
+    graph_list.print();
+    print_weights_matrix(weights, graph_list);
+    auto result_list = bellman_ford(graph_list, weights, 1);
+    print_bellman_ford_result(result_list, graph_list);
 
-    std::cout << "\nCreating graph from file 'graph-bellman-und.txt'...\n";
-    UndirectedAdjacencyListGraph<int> graph_und;
-    std::vector<std::vector<double>> weights_und;
-    populate_graph_weighted_from_file("data/graph-bellman-und.txt", graph_und, weights_und, false);
-    graph_und.print();
-    print_weights_matrix(weights_und, graph_und);
-    auto result_und = bellman_ford(graph_und, weights_und, 1);
-    print_bellman_ford_result(result_und, graph_und);
+    DirectedIncidenceMatrixGraph<int> graph_incidence;
+    populate_graph_weighted_from_file("data/digraph.txt", graph_incidence, weights);
+    graph_incidence.print();
+    print_weights_matrix(weights, graph_incidence);
+    auto result_incidence = bellman_ford(graph_incidence, weights, 1);
+    print_bellman_ford_result(result_incidence, graph_incidence);
 
     return 0;
 }
