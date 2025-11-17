@@ -8,7 +8,7 @@
 
 int main() {
 
-    const std::string filename = "data/graph-kruskal.txt";
+    const std::string filename = "data/graph.txt";
 
     std::cout << "\nCreating graph from file '" << filename << "'...\n";
 

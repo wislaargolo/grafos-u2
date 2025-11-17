@@ -1,19 +1,18 @@
 #include <iostream>
 #include <vector>
-#include <iomanip> // Para formatação
-#include <limits>   // Para std::numeric_limits
+#include <iomanip>
+#include <limits>
 
 #include "../Prim.h"
 #include "../utils/GraphIO.h"
-#include "../graph/UndirectedAdjacencyListGraph.h" // Implementação de grafo não-direcionado
+#include "../graph/UndirectedAdjacencyListGraph.h"
 
 /**
  * @brief Função principal para testar o algoritmo de Prim.
  */
 int main() {
 
-    // Define o arquivo de dados a ser usado
-    const std::string filename = "data/graph-prim.txt";
+    const std::string filename = "data/graph.txt";
     std::cout << "\nCreating graph from file '" << filename << "'...\n";
 
     UndirectedAdjacencyListGraph<char> graph;
