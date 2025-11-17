@@ -112,14 +112,15 @@ PrimResult<Node> prim(const IGraph<Node>& graph,
             // Se 'j' não está em Z, pula (if added[j] is false)
             if (added[j]){
 
-                for (int k = 0; k < n; ++k) {
-                    // Verifica se a aresta (j, k) é a de menor peso
-                    if (!added[k] & weights[j][k] < min_weight) {
-                        min_weight = weights[j][k];
-                        best_j = j;
-                        best_k = k;
-                    }
+                for (int k : graph.get_neighbors_indices(j)) {
+
+                // j ∈ Z, k ∈ N, e (j, k) é uma aresta que existe.
+                if (!added[k] & weights[j][k] < min_weight) {
+                    min_weight = weights[j][k];
+                    best_j = j;
+                    best_k = k;
                 }
+            }
             }
         }
 
