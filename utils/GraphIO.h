@@ -35,6 +35,8 @@ void populate_graph_from_file(const std::string& filename, IGraph<Node>& graph) 
     std::string line;
     /*Ignora a primeira linha de cabeçalho*/
     std::getline(file, line);
+    size_t order = std::stoi(line);
+    create_nodes(graph, order);
 
     while (std::getline(file, line)) {
         if (line.empty()) continue;
@@ -72,6 +74,7 @@ void populate_graph_weighted_from_file(const std::string& filename, IGraph<Node>
     std::stringstream ss_order(line);
 
     ss_order >> order;
+    create_nodes(graph, order);
 
     weights.assign(order, std::vector<double>(order, std::numeric_limits<double>::infinity()));
     
@@ -178,5 +181,24 @@ void remove_node_from_string(const std::string& str, IGraph<Node>& graph) {
     ss >> node;
     graph.remove_node(node);
 } 
+
+template<typename Node>
+void create_nodes(IGraph<Node>& graph, const int num_nodes) {
+    using U = std::remove_cv_t<Node>; // remove const/volatile e referências
+    if constexpr (std::is_same_v<U, char>) {
+        char start_char = 'A';
+        for (int i = 0; i < num_nodes; ++i) {
+        graph.add_node(static_cast<Node>(start_char + i));
+    }
+    } else if constexpr (std::is_same_v<U, int>) {
+        int start_int = 1;
+        for (int i = 0; i < num_nodes; ++i) {
+        graph.add_node(static_cast<Node>(start_int + i));
+    }
+    } else {
+        std::cout << "Node é outro tipo\n";
+        return;
+    }
+}
 
 #endif // GRAPH_IO_H
