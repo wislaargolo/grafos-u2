@@ -17,7 +17,8 @@ int main() {
     // populate_graph_from_file("data/digraph-floyd-warshall.txt", graph);
     graph.print();
     print_weights_matrix(weights, graph);
-    print_floyd_warshall_result(floyd_warshall(graph, weights), graph);
+    auto results = floyd_warshall(graph, weights);
+    print_floyd_warshall_result(results, graph);
 
     return 0;
 }
