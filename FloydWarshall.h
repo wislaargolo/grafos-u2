@@ -4,7 +4,10 @@
 #include <vector>
 #include <iostream>
 #include <limits>
+#include <algorithm>
+#include <iomanip>
 #include "graph/IGraph.h"
+#include "graph/DirectedAdjacencyListGraph.h"
 
 /**
  * @struct FloydWarshallResult
@@ -45,7 +48,6 @@ FloydWarshallResult<Node> floyd_warshall(const IGraph<Node> &graph,
             if (weights[i][j] != std::numeric_limits<double>::infinity() || i == j)
             {
                 result.predecessors[i][j] = node_i;
-                // result.shortest_paths_trees[i].add_edge(node_i, graph.get_index(graph.get_nodes()[j]));
             }
             else
             {
@@ -63,6 +65,23 @@ FloydWarshallResult<Node> floyd_warshall(const IGraph<Node> &graph,
         }
         result.distances[i][i] = 0; // Distância para si mesmo é zero
     }
+
+    // Executa o algoritmo de Floyd-Warshall
+    for (size_t k = 0; k < graph.get_order(); ++k)
+    {
+        for (size_t i = 0; i < graph.get_order(); ++i)
+        {
+            for (size_t j = 0; j < graph.get_order(); ++j)
+            {
+                if (result.distances[i][k] + result.distances[k][j] < result.distances[i][j])
+                {
+                    result.distances[i][j] = result.distances[i][k] + result.distances[k][j];
+                    result.predecessors[i][j] = result.predecessors[k][j];
+                }
+            }
+        }
+    }
+
     return result;
 }
 
@@ -72,26 +91,14 @@ void print_floyd_warshall_result(const FloydWarshallResult<Node> &result, const 
     // Implementação da função de impressão do resultado do Floyd-Warshall
     std::cout << "Floyd-Warshall Result:\n";
 
-    // for (size_t i = 0; i < graph.get_order(); ++i)
-    // {
-    //     for (size_t j = 0; j < graph.get_order(); ++j)
-    //     {
-    //         if (result.predecessors[i][j] == -1)
-    //         {
-    //             std::cout << "-1 ";
-    //         }
-    //         else
-    //         {
-    //             std::cout << " " << graph.get_nodes()[result.predecessors[i][j]] << " ";
-    //         }
-    //     }
-    //     std::cout << "\n";
-    // }
+   //Imprime a matriz de predecessores
     print_predecessors_matrix(result.predecessors, graph);
 
     //Imprime a matriz de distâncias
     print_distances_matrix(result.distances, graph);
 }
+
+
 
 template<typename Node>
 void print_predecessors_matrix(const std::vector<std::vector<int>>& predecessors, const IGraph<Node>& graph) {

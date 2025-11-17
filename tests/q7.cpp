@@ -14,7 +14,6 @@ int main() {
     DirectedAdjacencyMatrixGraph<char> graph;
     std::vector<std::vector<double>> weights;
     populate_graph_weighted_from_file("data/digraph-floyd-warshall.txt", graph, weights);
-    // populate_graph_from_file("data/digraph-floyd-warshall.txt", graph);
     graph.print();
     print_weights_matrix(weights, graph);
     auto results = floyd_warshall(graph, weights);
