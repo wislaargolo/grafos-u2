@@ -132,7 +132,9 @@ void print_weights_matrix(const std::vector<std::vector<double>>& weights, const
     std::cout << std::setfill(' ') << "\n";
 
     for (size_t i = 0; i < order; ++i) {
-        std::cout << graph.get_node(i) << " |"; 
+
+        std::cout << graph.get_node(i);
+        (graph.get_node(i) < 10) ? std::cout << "  |" : std::cout << " |"; 
 
         for (size_t j = 0; j < order; ++j) {
             if (j < weights[i].size() && weights[i][j] != std::numeric_limits<double>::infinity()) {
