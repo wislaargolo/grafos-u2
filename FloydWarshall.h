@@ -45,6 +45,8 @@ FloydWarshallResult<Node> floyd_warshall(const IGraph<Node> &graph,
         int node_i = graph.get_index(graph.get_nodes()[i]);
         for (size_t j = 0; j < graph.get_order(); ++j)
         {
+            // Se há uma aresta de i para j, o predecessor de j é i 
+            // ou caso i == j será considerado o próprio nó como predecessor
             if (weights[i][j] != std::numeric_limits<double>::infinity() || i == j)
             {
                 result.predecessors[i][j] = node_i;
@@ -61,20 +63,26 @@ FloydWarshallResult<Node> floyd_warshall(const IGraph<Node> &graph,
     {
         for (size_t j = 0; j < graph.get_order(); ++j)
         {
+            // apenas copia os pesos das arestas
             result.distances[i][j] = weights[i][j];
         }
         result.distances[i][i] = 0; // Distância para si mesmo é zero
     }
 
     // Executa o algoritmo de Floyd-Warshall
+
+    // Para cada nó intermediário k verifica se o caminho passando por k é mais curto
+    // em todos os pares de nós (i, j)
     for (size_t k = 0; k < graph.get_order(); ++k)
     {
         for (size_t i = 0; i < graph.get_order(); ++i)
         {
             for (size_t j = 0; j < graph.get_order(); ++j)
             {
+                // Verifica se o caminho passando por k é mais curto
                 if (result.distances[i][k] + result.distances[k][j] < result.distances[i][j])
                 {
+                    // Atualiza a distância e o predecessor se um caminho mais curto for encontrado
                     result.distances[i][j] = result.distances[i][k] + result.distances[k][j];
                     result.predecessors[i][j] = result.predecessors[k][j];
                 }
@@ -82,7 +90,131 @@ FloydWarshallResult<Node> floyd_warshall(const IGraph<Node> &graph,
         }
     }
 
+    for (size_t i = 0; i < graph.get_order(); ++i)
+    {
+        Node source_node = graph.get_node(i);
+        DirectedAdjacencyListGraph<Node> tree = get_shortest_paths_tree(graph, source_node, result.predecessors, result.distances);
+        result.shortest_paths_trees.push_back(tree);
+    }
+
     return result;
+}
+
+
+/**
+ * @brief Imprime o caminho mais curto entre dois nós.
+ * @param graph O grafo original.
+ * @param path Vetor com os índices dos nós no caminho.
+ * @param distances Matriz de distâncias do Floyd-Warshall.
+ */
+template <typename Node>
+void print_shortest_path(
+    const IGraph<Node>& graph,
+    std::vector<int> path,
+    const std::vector<std::vector<double>>& distances)
+{
+    std::cout << "  ";
+    // Imprime o caminho com os pesos das arestas
+    for (size_t i = 0; i < path.size(); ++i)
+    {
+        std::cout << "(" << graph.get_node(path[i]) << ")";
+        if (i + 1 < path.size())
+        {
+            std::cout << " -- " << static_cast<int>(distances[path[i]][path[i + 1]]) << " --> ";
+        }
+    }
+    std::cout << std::endl;
+}
+
+/**
+ * @brief Reconstrói o caminho mais curto de um nó origem até um nó destino.
+ * @param source_idx Índice do nó de origem.
+ * @param dest_idx Índice do nó de destino.
+ * @param predecessors Matriz de predecessores do Floyd-Warshall.
+ * @return Vetor com os índices dos nós no caminho (do destino até a origem, em ordem reversa).
+ */
+std::vector<int> reconstruct_path(int source_idx, int dest_idx, 
+                                   const std::vector<std::vector<int>>& predecessors)
+{
+    std::vector<int> path;
+    
+    // Se não há caminho
+    if (predecessors[source_idx][dest_idx] == -1) {
+        return path;
+    }
+    
+    // Reconstrói o caminho do destino até a origem
+    int current = dest_idx;
+    while (current != source_idx) {
+        path.push_back(current);
+        current = predecessors[source_idx][current];
+        
+        // Proteção contra ciclos (não deveria acontecer em Floyd-Warshall correto)
+        if (current == -1) {
+            return std::vector<int>(); // retorna vazio se houver problema
+        }
+    }
+    path.push_back(source_idx);
+    
+    // Inverte para ter o caminho da origem ao destino
+    std::reverse(path.begin(), path.end());
+    
+    return path;
+}
+
+/**
+ * @brief Constrói a árvore de caminhos mais curtos a partir de um nó de origem.
+ * @param graph O grafo original.
+ * @param source_node O nó de origem para construir a árvore.
+ * @param predecessors Matriz de predecessores do Floyd-Warshall.
+ * @param distances Matriz de distâncias do Floyd-Warshall.
+ * @return Um grafo direcionado representando a árvore de caminhos mais curtos.
+ */
+template <typename Node>
+DirectedAdjacencyListGraph<Node> get_shortest_paths_tree(
+    const IGraph<Node>& graph,
+    const Node& source_node,
+    const std::vector<std::vector<int>>& predecessors,
+    const std::vector<std::vector<double>>& distances)
+{
+    DirectedAdjacencyListGraph<Node> tree;
+    
+    // Adiciona todos os nós do grafo original à árvore
+    for (const auto& node : graph.get_nodes()) {
+        tree.add_node(node);
+    }
+    
+    int source_idx = graph.get_index(source_node);
+    
+    // Para cada nó destino alcançável
+    for (size_t dest_idx = 0; dest_idx < graph.get_order(); ++dest_idx) {
+        // Pula o próprio nó de origem
+        if (dest_idx == static_cast<size_t>(source_idx)) {
+            continue;
+        }
+        
+        // Pula nós não alcançáveis
+        if (distances[source_idx][dest_idx] == std::numeric_limits<double>::infinity()) {
+            continue;
+        }
+        
+        // Reconstrói o caminho
+        std::vector<int> path = reconstruct_path(source_idx, dest_idx, predecessors);
+        
+        // Adiciona as arestas do caminho à árvore
+        for (size_t i = 0; i + 1 < path.size(); ++i) {
+            Node from = graph.get_node(path[i]);
+            Node to = graph.get_node(path[i + 1]);
+            
+            // Adiciona a aresta apenas se ainda não existir na árvore
+            // (para evitar duplicação quando múltiplos caminhos compartilham arestas)
+            if (!tree.is_adjacent(from, to)) {
+                tree.add_edge(from, to);
+            }
+        }
+    }
+    
+    return tree;
 }
 
 template <typename Node>
@@ -96,8 +228,27 @@ void print_floyd_warshall_result(const FloydWarshallResult<Node> &result, const 
 
     //Imprime a matriz de distâncias
     print_distances_matrix(result.distances, graph);
-}
 
+    //Imprime as árvores de caminhos mais curtos
+    for (size_t i = 0; i < graph.get_order(); ++i) {
+        
+        std::cout << "Shortest Paths Tree from node " << graph.get_node(i) << ":\n";
+        result.shortest_paths_trees[i].print();
+    }
+
+    //Imprime os caminhos mais curtos
+    
+    for (size_t i = 0; i < graph.get_order(); ++i)
+    {
+        
+        std::cout << "Shortest Paths from node " << graph.get_node(i) << ":\n";
+        for (size_t j = 0; j < graph.get_order(); ++j) {
+            std::vector<int> path = reconstruct_path(graph.get_index(graph.get_node(i)), graph.get_index(graph.get_node(j)), result.predecessors);
+            print_shortest_path(graph, path, result.distances);
+        }
+        std::cout << std::endl;
+    }
+}
 
 
 template<typename Node>
