@@ -27,7 +27,7 @@ struct PrimResult {
 template<typename Node>
 void print_prim_state(const std::string& title,
                       const IGraph<Node>& graph,
-                      const std::vector<bool>& added, // MODIFICADO: Era Z e N
+                      const std::vector<bool>& added,
                       const PrimResult<Node>& result) {
 
     std::cout << "\n" << title << "\n";
@@ -57,8 +57,6 @@ void print_prim_state(const std::string& title,
     if (n_empty) std::cout << "(vazio)";
     std::cout << "}\n";
 
-
-    // T
     std::cout << "T { ";
     if (result.tree.get_size() == 0)
         std::cout << "(vazia)";
@@ -150,4 +148,4 @@ void print_prim_result(PrimResult<Node>& result) {
     std::cout << "Total weight: " << result.total_weight << "\n";
 }
 
-#endif // PRIM_H
+#endif

@@ -8,7 +8,7 @@
 
 #include "graph/IGraph.h"
 #include "graph/UndirectedAdjacencyListGraph.h"
-#include "utils/Bfs.h"
+#include "utils/Dfs.h"
 
 /**
  * @struct KruskalResult

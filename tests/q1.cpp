@@ -12,7 +12,7 @@ int main() {
 
     std::cout << "\nCreating graph from file '" << filename << "'...\n";
 
-    UndirectedAdjacencyListGraph<char> graph;
+    UndirectedAdjacencyListGraph<int> graph;
     std::vector<std::vector<double>> weights;
 
     populate_graph_weighted_from_file(filename, graph, weights, false);
